@@ -4,12 +4,16 @@ import 'package:provider/provider.dart' as provider;
 
 import 'presentation/pages/home_page.dart';
 import 'state/provider/counter_provider.dart';
+import 'state/provider/product_provider.dart';
 
 void main() {
   runApp(
     ProviderScope(
-      child: provider.ChangeNotifierProvider(
-        create: (_) => CounterProvider(),
+      child: provider.MultiProvider(
+        providers: [
+          provider.ChangeNotifierProvider(create: (_) => CounterProvider()),
+          provider.ChangeNotifierProvider(create: (_) => ProductProvider()),
+        ],
         child: const MyApp(),
       ),
     ),
