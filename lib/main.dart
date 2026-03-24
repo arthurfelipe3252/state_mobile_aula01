@@ -5,6 +5,7 @@ import 'package:provider/provider.dart' as provider;
 import 'presentation/pages/home_page.dart';
 import 'state/provider/counter_provider.dart';
 import 'state/provider/product_provider.dart';
+import 'state/provider/api_product_provider.dart';
 
 void main() {
   runApp(
@@ -13,6 +14,7 @@ void main() {
         providers: [
           provider.ChangeNotifierProvider(create: (_) => CounterProvider()),
           provider.ChangeNotifierProvider(create: (_) => ProductProvider()),
+          provider.ChangeNotifierProvider(create: (_) => ApiProductProvider()),
         ],
         child: const MyApp(),
       ),

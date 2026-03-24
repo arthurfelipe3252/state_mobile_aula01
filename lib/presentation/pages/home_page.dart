@@ -4,6 +4,7 @@ import 'provider_page.dart';
 import 'riverpod_page.dart';
 import 'bloc_page.dart';
 import 'product_page.dart';
+import 'api_product_list_page.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
@@ -47,6 +48,16 @@ class HomePage extends StatelessWidget {
               Navigator.push(
                 context,
                 MaterialPageRoute(builder: (_) => const ProductPage()),
+              );
+            },
+          ),
+          ListTile(
+            title: const Text("Produtos - Fake API"),
+            subtitle: const Text("Navegacao multi-tela com API"),
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (_) => const ApiProductListPage()),
               );
             },
           ),
