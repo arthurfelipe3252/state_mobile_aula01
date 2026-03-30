@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../state/provider/api_product_provider.dart';
+import '../widgets/product_card.dart';
 import 'api_product_detail_page.dart';
+import 'api_product_form_page.dart';
 
 class ApiProductListPage extends StatefulWidget {
   const ApiProductListPage({super.key});
@@ -29,6 +31,15 @@ class _ApiProductListPageState extends State<ApiProductListPage> {
         title: const Text("Produtos - Fake API"),
       ),
       body: _buildBody(prov),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (_) => const ApiProductFormPage()),
+          );
+        },
+        child: const Icon(Icons.add),
+      ),
     );
   }
 
@@ -68,48 +79,49 @@ class _ApiProductListPageState extends State<ApiProductListPage> {
       itemCount: prov.products.length,
       itemBuilder: (context, index) {
         final product = prov.products[index];
-        return Card(
-          child: ListTile(
-            leading: SizedBox(
-              width: 50,
-              height: 50,
-              child: Image.network(
-                product.image,
-                fit: BoxFit.contain,
-                loadingBuilder: (context, child, loadingProgress) {
-                  if (loadingProgress == null) return child;
-                  return const Center(
-                    child: SizedBox(
-                      width: 20,
-                      height: 20,
-                      child: CircularProgressIndicator(strokeWidth: 2),
-                    ),
-                  );
-                },
+        return ProductCard(
+          product: product,
+          onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (_) => ApiProductDetailPage(product: product),
               ),
-            ),
-            title: Text(
-              product.title,
-              maxLines: 2,
-              overflow: TextOverflow.ellipsis,
-            ),
-            subtitle: Text(
-              "R\$ ${product.price.toStringAsFixed(2)}",
-              style: const TextStyle(
-                fontWeight: FontWeight.w600,
-                color: Colors.green,
+            );
+          },
+          onEdit: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (_) => ApiProductFormPage(product: product),
               ),
-            ),
-            trailing: const Icon(Icons.chevron_right),
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (_) => ApiProductDetailPage(product: product),
-                ),
-              );
-            },
-          ),
+            );
+          },
+          onDelete: () {
+            showDialog(
+              context: context,
+              builder: (ctx) => AlertDialog(
+                title: const Text('Confirmar exclusao'),
+                content: Text('Deseja excluir "${product.title}"?'),
+                actions: [
+                  TextButton(
+                    onPressed: () => Navigator.pop(ctx),
+                    child: const Text('Cancelar'),
+                  ),
+                  TextButton(
+                    onPressed: () {
+                      context
+                          .read<ApiProductProvider>()
+                          .deleteProduct(product.id);
+                      Navigator.pop(ctx);
+                    },
+                    child: const Text('Excluir',
+                        style: TextStyle(color: Colors.red)),
+                  ),
+                ],
+              ),
+            );
+          },
         );
       },
     );

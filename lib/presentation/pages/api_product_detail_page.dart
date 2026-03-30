@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import '../../models/api_product.dart';
+import '../../state/provider/api_product_provider.dart';
+import 'api_product_form_page.dart';
 
 class ApiProductDetailPage extends StatelessWidget {
   final ApiProduct product;
@@ -11,6 +14,48 @@ class ApiProductDetailPage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: const Text("Detalhes do Produto"),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.edit),
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (_) => ApiProductFormPage(product: product),
+                ),
+              );
+            },
+          ),
+          IconButton(
+            icon: const Icon(Icons.delete),
+            onPressed: () {
+              showDialog(
+                context: context,
+                builder: (ctx) => AlertDialog(
+                  title: const Text('Confirmar exclusao'),
+                  content: Text('Deseja excluir "${product.title}"?'),
+                  actions: [
+                    TextButton(
+                      onPressed: () => Navigator.pop(ctx),
+                      child: const Text('Cancelar'),
+                    ),
+                    TextButton(
+                      onPressed: () {
+                        context
+                            .read<ApiProductProvider>()
+                            .deleteProduct(product.id);
+                        Navigator.pop(ctx);
+                        Navigator.pop(context);
+                      },
+                      child: const Text('Excluir',
+                          style: TextStyle(color: Colors.red)),
+                    ),
+                  ],
+                ),
+              );
+            },
+          ),
+        ],
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16),
