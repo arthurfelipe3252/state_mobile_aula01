@@ -1,9 +1,11 @@
-import 'package:flutter/material.dart';
-import '../../models/api_product.dart';
-import '../../services/api_product_service.dart';
+import 'package:flutter/foundation.dart';
+import '../../domain/entities/api_product.dart';
+import '../../domain/repositories/product_repository.dart';
 
-class ApiProductProvider extends ChangeNotifier {
-  final ApiProductService _service = ApiProductService();
+class ApiProductViewModel extends ChangeNotifier {
+  final ProductRepository repository;
+
+  ApiProductViewModel({required this.repository});
 
   List<ApiProduct> _products = [];
   bool _isLoading = false;
@@ -17,13 +19,11 @@ class ApiProductProvider extends ChangeNotifier {
     _isLoading = true;
     _error = null;
     notifyListeners();
-
     try {
-      _products = await _service.fetchProducts();
+      _products = await repository.fetchProducts();
     } catch (e) {
       _error = e.toString();
     }
-
     _isLoading = false;
     notifyListeners();
   }
@@ -32,9 +32,8 @@ class ApiProductProvider extends ChangeNotifier {
     _isLoading = true;
     _error = null;
     notifyListeners();
-
     try {
-      await _service.addProduct(product);
+      await repository.addProduct(product);
       final localId = _products.isNotEmpty
           ? _products.map((p) => p.id).reduce((a, b) => a > b ? a : b) + 1
           : 1;
@@ -42,7 +41,6 @@ class ApiProductProvider extends ChangeNotifier {
     } catch (e) {
       _error = e.toString();
     }
-
     _isLoading = false;
     notifyListeners();
   }
@@ -51,17 +49,13 @@ class ApiProductProvider extends ChangeNotifier {
     _isLoading = true;
     _error = null;
     notifyListeners();
-
     try {
-      await _service.updateProduct(product);
+      await repository.updateProduct(product);
       final index = _products.indexWhere((p) => p.id == product.id);
-      if (index != -1) {
-        _products[index] = product;
-      }
+      if (index != -1) _products[index] = product;
     } catch (e) {
       _error = e.toString();
     }
-
     _isLoading = false;
     notifyListeners();
   }
@@ -70,14 +64,12 @@ class ApiProductProvider extends ChangeNotifier {
     _isLoading = true;
     _error = null;
     notifyListeners();
-
     try {
-      await _service.deleteProduct(id);
+      await repository.deleteProduct(id);
       _products.removeWhere((p) => p.id == id);
     } catch (e) {
       _error = e.toString();
     }
-
     _isLoading = false;
     notifyListeners();
   }

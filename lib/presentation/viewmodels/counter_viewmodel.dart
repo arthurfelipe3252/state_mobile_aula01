@@ -1,7 +1,6 @@
+import 'package:flutter/foundation.dart';
 
-import 'package:flutter/material.dart';
-
-class CounterProvider extends ChangeNotifier {
+class CounterViewModel extends ChangeNotifier {
   int value = 0;
 
   void increment() {

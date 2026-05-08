@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../../models/api_product.dart';
-import '../../state/provider/api_product_provider.dart';
+import '../../domain/entities/api_product.dart';
+import '../viewmodels/api_product_viewmodel.dart';
 import 'api_product_form_page.dart';
 
 class ApiProductDetailPage extends StatelessWidget {
@@ -42,7 +42,7 @@ class ApiProductDetailPage extends StatelessWidget {
                     TextButton(
                       onPressed: () {
                         context
-                            .read<ApiProductProvider>()
+                            .read<ApiProductViewModel>()
                             .deleteProduct(product.id);
                         Navigator.pop(ctx);
                         Navigator.pop(context);

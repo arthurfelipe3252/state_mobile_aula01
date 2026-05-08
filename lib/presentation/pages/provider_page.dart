@@ -1,14 +1,13 @@
-
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../../state/provider/counter_provider.dart';
+import '../viewmodels/counter_viewmodel.dart';
 
 class ProviderPage extends StatelessWidget {
   const ProviderPage({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final counter = context.watch<CounterProvider>();
+    final counter = context.watch<CounterViewModel>();
 
     return Scaffold(
       appBar: AppBar(title: const Text("Provider Counter")),

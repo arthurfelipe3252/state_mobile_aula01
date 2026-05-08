@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../../models/api_product.dart';
-import '../../state/provider/api_product_provider.dart';
+import '../../domain/entities/api_product.dart';
+import '../viewmodels/api_product_viewmodel.dart';
 import '../widgets/product_form_field.dart';
 
 class ApiProductFormPage extends StatefulWidget {
@@ -52,7 +52,7 @@ class _ApiProductFormPageState extends State<ApiProductFormPage> {
   void _submit() async {
     if (!_formKey.currentState!.validate()) return;
 
-    final provider = context.read<ApiProductProvider>();
+    final vm = context.read<ApiProductViewModel>();
 
     final product = ApiProduct(
       id: widget.product?.id ?? 0,
@@ -68,9 +68,9 @@ class _ApiProductFormPageState extends State<ApiProductFormPage> {
     );
 
     if (isEditing) {
-      await provider.updateProduct(product);
+      await vm.updateProduct(product);
     } else {
-      await provider.addProduct(product);
+      await vm.addProduct(product);
     }
 
     if (mounted) {

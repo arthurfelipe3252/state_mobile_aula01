@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../../state/provider/api_product_provider.dart';
+import '../../presentation/viewmodels/api_product_viewmodel.dart';
 import '../widgets/product_card.dart';
 import 'api_product_detail_page.dart';
 import 'api_product_form_page.dart';
@@ -16,21 +16,21 @@ class _ApiProductListPageState extends State<ApiProductListPage> {
   @override
   void initState() {
     super.initState();
-    final provider = context.read<ApiProductProvider>();
-    if (provider.products.isEmpty && !provider.isLoading) {
-      provider.loadProducts();
+    final vm = context.read<ApiProductViewModel>();
+    if (vm.products.isEmpty && !vm.isLoading) {
+      vm.loadProducts();
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    final prov = context.watch<ApiProductProvider>();
+    final vm = context.watch<ApiProductViewModel>();
 
     return Scaffold(
       appBar: AppBar(
         title: const Text("Produtos - Fake API"),
       ),
-      body: _buildBody(prov),
+      body: _buildBody(vm),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           Navigator.push(
@@ -43,12 +43,12 @@ class _ApiProductListPageState extends State<ApiProductListPage> {
     );
   }
 
-  Widget _buildBody(ApiProductProvider prov) {
-    if (prov.isLoading) {
+  Widget _buildBody(ApiProductViewModel vm) {
+    if (vm.isLoading) {
       return const Center(child: CircularProgressIndicator());
     }
 
-    if (prov.error != null) {
+    if (vm.error != null) {
       return Center(
         child: Padding(
           padding: const EdgeInsets.all(24),
@@ -57,15 +57,15 @@ class _ApiProductListPageState extends State<ApiProductListPage> {
             children: [
               const Icon(Icons.error_outline, size: 48, color: Colors.red),
               const SizedBox(height: 16),
-              Text(
+              const Text(
                 "Erro ao carregar produtos",
-                style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
+                style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
               ),
               const SizedBox(height: 8),
-              Text(prov.error!, textAlign: TextAlign.center),
+              Text(vm.error!, textAlign: TextAlign.center),
               const SizedBox(height: 16),
               ElevatedButton(
-                onPressed: () => prov.loadProducts(),
+                onPressed: () => vm.loadProducts(),
                 child: const Text("Tentar novamente"),
               ),
             ],
@@ -76,9 +76,9 @@ class _ApiProductListPageState extends State<ApiProductListPage> {
 
     return ListView.builder(
       padding: const EdgeInsets.all(12),
-      itemCount: prov.products.length,
+      itemCount: vm.products.length,
       itemBuilder: (context, index) {
-        final product = prov.products[index];
+        final product = vm.products[index];
         return ProductCard(
           product: product,
           onTap: () {
@@ -111,7 +111,7 @@ class _ApiProductListPageState extends State<ApiProductListPage> {
                   TextButton(
                     onPressed: () {
                       context
-                          .read<ApiProductProvider>()
+                          .read<ApiProductViewModel>()
                           .deleteProduct(product.id);
                       Navigator.pop(ctx);
                     },
